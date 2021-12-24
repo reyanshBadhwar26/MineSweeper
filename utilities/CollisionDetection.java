@@ -24,28 +24,34 @@ public class CollisionDetection {
 		this.bounceFactorY = bounceFactorY;
 	}
 
-	public static boolean overlaps(double a_left, double a_top, double a_right, double a_bottom, double b_left, double b_top, double b_right, double b_bottom) {
-		boolean a_to_left_of_b = (a_right < b_left); //case 1: right edge of A is to the left of left edge of B
-		boolean a_to_right_of_b = (a_left > b_right); //case 2: left edge of A is to the right of right edge of B
-		boolean horizontal_overlap = !(a_to_left_of_b || a_to_right_of_b);
+	public static boolean overlaps(double leftA, double topA, double rightA, double bottomA, double leftB, double topB, double rightB, double bottomB) {
+		boolean toLeft = (rightA < leftB); //case 1: right edge of A is to the left of left edge of B, so A is fully to left of A
+		boolean toRight = (leftA > rightB); //case 2: left edge of A is to the right of right edge of B, so A is fully to right of B
+		boolean overlapX = !(toLeft || toRight);
 
-		boolean a_above_b = (a_bottom < b_top); //case 1: bottom edge of A is above top edge of B
-		boolean a_below_b = (a_top > b_bottom); //case 2: top edge of A is below bottom edge of B
-		boolean vertical_overlap = !(a_above_b || a_below_b);
+		boolean above = (bottomA < topB); //case 1: bottom edge of A is above top edge of B, so A is fully above B
+		boolean below = (topA > bottomB); //case 2: top edge of A is below bottom edge of B, so A is fully below B
+		boolean overlapY = !(above || below);
 
-		return (horizontal_overlap && vertical_overlap);
+		return (overlapX && overlapY);
 	}
 
-	public static boolean inside(double a_left, double a_top, double a_right, double a_bottom, double b_left, double b_top, double b_right, double b_bottom) {
-		boolean x_inside = ((b_left <= a_left) && (a_right <= b_right));
-		boolean y_inside = ((b_top <= a_top) && (a_bottom <= b_bottom));
-		if (x_inside && y_inside) {
+	public static boolean inside(double leftA, double topA, double rightA, double bottomA, double leftB, double topB, double rightB, double bottomB) {
+		boolean insideX = ((leftB <= leftA) && (rightA <= rightB));
+		boolean insideY = ((topB <= topA) && (bottomA <= bottomB));
+		if (insideX && insideY) {
 			return true;
 		}
 		else {
 			return false;	    	
 		}
 	}
+
+	public static boolean covers (double leftA, double topA, double rightA, double bottomA, double leftB, double topB, double rightB, double bottomB) {
+		//A cover B <-->  B inside A
+		return inside(leftB, topB, rightB, bottomB, leftA, topA, rightA, bottomA);
+	}
+
 	
 	public static boolean pixelBasedOverlaps(DisplayableSprite spriteA, DisplayableSprite spriteB) {
 
@@ -70,8 +76,6 @@ public class CollisionDetection {
 		double scaleXB = bufferedB.getHeight() /  (float)spriteB.getWidth();
 		double scaleYB = bufferedB.getHeight() /  (float)spriteB.getHeight();
 
-//		System.out.println(String.format("left: %3d; top: %3d right: %3d; bottom: %3d", left,top,right,bottom)); 
-
 		for (int x = left; x < right; x++) {
 			for (int y = top; y < bottom; y++) {
 				int xA = (int)(x * scaleXA);
@@ -81,7 +85,6 @@ public class CollisionDetection {
 				if ((xB >= 0) && (yB >= 0) && (yB < bufferedB.getWidth()) && (yB < bufferedB.getHeight())) {
 					int pixelA = bufferedA.getRGB(xA, yA);
 					int pixelB = bufferedB.getRGB(xB, yB);
-//					System.out.println(String.format("A: %02X; B): %02X",pixelA>>>24, pixelB>>>24)) ;
 					if ((pixelA>>>24 > 0x00) && (pixelB>>>24 > 0x00)) {
 						return true;
 					}
@@ -92,10 +95,6 @@ public class CollisionDetection {
 		return false;
 		
 		
-	}
-
-	public static boolean covers (double a_left, double a_top, double a_right, double a_bottom, double b_left, double b_top, double b_right, double b_bottom) {
-		return inside(b_left, b_top, b_right, b_bottom, a_left, a_top, a_right, a_bottom);
 	}
 
 	public void calculate2DBounce(TwoDimensionBounce twoDBounce, DisplayableSprite sprite, ArrayList<DisplayableSprite> barriers, double velocityX, double velocityY, long actual_delta_time ) {
