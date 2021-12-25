@@ -375,7 +375,6 @@ public class AnimationFrame extends JFrame {
 		MouseInput.screenY = e.getY();
 		MouseInput.logicalX = translateToLogicalX(MouseInput.screenX);
 		MouseInput.logicalY = translateToLogicalY(MouseInput.screenY);
-		System.out.println(String.format("mouseMoved:  logicalX:  %5.2f; logicalY: %5.2f", MouseInput.logicalX, MouseInput.logicalY));
 	}
 
 	protected void this_windowClosing(WindowEvent e) {
