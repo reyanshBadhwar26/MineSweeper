@@ -24,6 +24,31 @@ public class CollisionDetection {
 		this.bounceFactorY = bounceFactorY;
 	}
 
+	public static boolean overlaps(DisplayableSprite spriteA, DisplayableSprite spriteB) {
+		return overlaps(
+				spriteA.getMinX(), 
+				spriteA.getMinY(), 
+				spriteA.getMaxX(), 
+				spriteA.getMaxY(), 
+				spriteB.getMinX(), 
+				spriteB.getMinY(), 
+				spriteB.getMaxX(), 
+				spriteB.getMaxY());		
+	}
+
+	public static boolean overlaps(DisplayableSprite spriteA, DisplayableSprite spriteB, double deltaAX, double deltaAY) {
+		
+		return overlaps(
+				spriteA.getMinX() + deltaAX, 
+				spriteA.getMinY() + deltaAY, 
+				spriteA.getMaxX() + deltaAX, 
+				spriteA.getMaxY() + deltaAY, 
+				spriteB.getMinX(), 
+				spriteB.getMinY(), 
+				spriteB.getMaxX(), 
+				spriteB.getMaxY());		
+	}
+
 	public static boolean overlaps(double leftA, double topA, double rightA, double bottomA, double leftB, double topB, double rightB, double bottomB) {
 		boolean toLeft = (rightA < leftB); //case 1: right edge of A is to the left of left edge of B, so A is fully to left of A
 		boolean toRight = (leftA > rightB); //case 2: left edge of A is to the right of right edge of B, so A is fully to right of B
@@ -35,7 +60,32 @@ public class CollisionDetection {
 
 		return (overlapX && overlapY);
 	}
+	
+	public static boolean inside(DisplayableSprite spriteA, DisplayableSprite spriteB) {
+		return inside(
+				spriteA.getMinX(), 
+				spriteA.getMinY(), 
+				spriteA.getMaxX(), 
+				spriteA.getMaxY(), 
+				spriteB.getMinX(), 
+				spriteB.getMinY(), 
+				spriteB.getMaxX(), 
+				spriteB.getMaxY());		
+	}
 
+	public static boolean inside(DisplayableSprite spriteA, DisplayableSprite spriteB, double deltaAX, double deltaAY) {
+		
+		return inside(
+				spriteA.getMinX() + deltaAX, 
+				spriteA.getMinY() + deltaAY, 
+				spriteA.getMaxX() + deltaAX, 
+				spriteA.getMaxY() + deltaAY, 
+				spriteB.getMinX(), 
+				spriteB.getMinY(), 
+				spriteB.getMaxX(), 
+				spriteB.getMaxY());		
+	}
+	
 	public static boolean inside(double leftA, double topA, double rightA, double bottomA, double leftB, double topB, double rightB, double bottomB) {
 		boolean insideX = ((leftB <= leftA) && (rightA <= rightB));
 		boolean insideY = ((topB <= topA) && (bottomA <= bottomB));
@@ -45,13 +95,23 @@ public class CollisionDetection {
 		else {
 			return false;	    	
 		}
+	}	
+	
+	public static boolean covers (DisplayableSprite spriteA, DisplayableSprite spriteB) {
+		//A cover B <-->  B inside A
+		return inside(spriteB, spriteA);
 	}
 
+	public static boolean covers (DisplayableSprite spriteA, DisplayableSprite spriteB, double deltaAX, double deltaAY) {
+		//A cover B <-->  B inside A
+		//offset is equivalent
+		return inside(spriteB, spriteA, deltaAX, deltaAY);
+	}
+	
 	public static boolean covers (double leftA, double topA, double rightA, double bottomA, double leftB, double topB, double rightB, double bottomB) {
 		//A cover B <-->  B inside A
 		return inside(leftB, topB, rightB, bottomB, leftA, topA, rightA, bottomA);
 	}
-
 	
 	public static boolean pixelBasedOverlaps(DisplayableSprite spriteA, DisplayableSprite spriteB) {
 
