@@ -158,6 +158,11 @@ public class CollisionDetection {
 	}
 
 	public void calculate2DBounce(TwoDimensionBounce twoDBounce, DisplayableSprite sprite, ArrayList<DisplayableSprite> barriers, double velocityX, double velocityY, long actual_delta_time ) {
+		calculate2DBounce(twoDBounce, sprite, barriers, velocityX,  velocityY,  actual_delta_time, null);
+	}
+
+	
+	public void calculate2DBounce(TwoDimensionBounce twoDBounce, DisplayableSprite sprite, ArrayList<DisplayableSprite> barriers, double velocityX, double velocityY, long actual_delta_time, Class type) {
 
 		if (twoDBounce == null) {
 			twoDBounce = new TwoDimensionBounce();
@@ -174,12 +179,17 @@ public class CollisionDetection {
 		twoDBounce.didBounce = false;
 
 		for (DisplayableSprite barrier : barriers) {
+						
+			if ( (type != null) && (barrier.getClass().equals(type) == false)) {
+				continue;				
+			}
+						
 			//colliding with top edge of barrier?
-			//?moving down (can only collide if sprite is moving down)
-			if (movementY > 0) {
+			//can only collide if sprite is moving down and currently above the barrier
+			if (movementY > 0 && sprite.getMaxY() < barrier.getMaxY()) {
 				//?is the sprite to the left || right of the barrier? (can only collide if this is not the case) 
 				if (!( (sprite.getMinX() >= barrier.getMaxX()) || (sprite.getMaxX() <= barrier.getMinX()))) {
-					calculateOneDBounce(bounce, sprite.getMaxY(), movementY, barrier.getMinY(), bounceFactorY);
+					calculateOneDBounce(bounce, sprite.getMaxY(), movementY, barrier.getMinY(), barrier.getMaxY(), bounceFactorY);
 					if (bounce.didBounce) {
 						twoDBounce.newY = bounce.newLocaton - sprite.getHeight();
 						//cannot use the returned velocity as it actually (in this case) represents movement for the given delta time
@@ -190,11 +200,11 @@ public class CollisionDetection {
 			}
 
 			//colliding with bottom edge of barrier?
-			//?moving up (can only collide if sprite is moving up)
-			if (movementY < 0) {
+			//can only collide if sprite is moving up and currently below the barrier
+			if (movementY < 0 && sprite.getMinY() > barrier.getMinY()) {
 				//is the sprite to the left || right of the barrier? (can only collide if this is not the case) 
 				if (! ((sprite.getMinX() >= barrier.getMaxX()) || (sprite.getMaxX() <= barrier.getMinX()))) {
-					calculateOneDBounce(bounce, sprite.getMinY(), movementY, barrier.getMaxY(), bounceFactorY);
+					calculateOneDBounce(bounce, sprite.getMinY(), movementY, barrier.getMaxY(), barrier.getMinY(), bounceFactorY);
 					if (bounce.didBounce) {
 						twoDBounce.newY = bounce.newLocaton;
 						twoDBounce.newVelocityY = (velocityY * bounceFactorY * -1);
@@ -204,11 +214,11 @@ public class CollisionDetection {
 			}
 
 			//colliding with left edge of barrier?
-			//?moving right (can only collide if sprite is moving to right)
-			if (movementX > 0) {
+			//can only collide if sprite is moving right and currently to left of the barrier
+			if (movementX > 0 && sprite.getMaxX() < barrier.getMaxX()) {
 				//?is the sprite above || below the barrier? (can only collide if this is not the case) 
 				if (!( (sprite.getMinY() >= barrier.getMaxY()) || (sprite.getMaxY() <= barrier.getMinY()))) {
-					calculateOneDBounce(bounce, sprite.getMaxX(), movementX, barrier.getMinX(), bounceFactorX);
+					calculateOneDBounce(bounce, sprite.getMaxX(), movementX, barrier.getMinX(), barrier.getMaxX(), bounceFactorX);
 					if (bounce.didBounce) {
 						twoDBounce.newX = bounce.newLocaton - sprite.getWidth();
 						twoDBounce.newVelocityX = (velocityX * bounceFactorX * -1);
@@ -219,10 +229,11 @@ public class CollisionDetection {
 
 			//colliding with right edge of barrier?
 			//?moving left (can only collide if sprite is moving to left)
-			if (movementX < 0) {
+			//can only collide if sprite is moving left and currently to right of the barrier
+			if (movementX < 0 && sprite.getMinX() > barrier.getMinX()) {
 				//?is the sprite above || below the barrier? (can only collide if this is not the case) 
 				if (!( (sprite.getMinY() >= barrier.getMaxY()) || (sprite.getMaxY() <= barrier.getMinY()))) {
-					calculateOneDBounce(bounce, sprite.getMinX(), movementX, barrier.getMaxX(), bounceFactorX);
+					calculateOneDBounce(bounce, sprite.getMinX(), movementX, barrier.getMaxX(), barrier.getMinX(), bounceFactorX);
 					if (bounce.didBounce) {
 						twoDBounce.newX = bounce.newLocaton;
 						twoDBounce.newVelocityX = (velocityX * bounceFactorX * -1);
@@ -234,26 +245,52 @@ public class CollisionDetection {
 	}
 
 	/**
+	 * @param bounaryFar TODO
 	 * @param lineBounce: will contain the results of the bounce calculation; cannot be null
 	 */
-	public void calculateOneDBounce(OneDimensionBounce oneDBounce, double location, double velocity, double boundary, double bounceFactor) {
+	public void calculateOneDBounce(OneDimensionBounce oneDBounce, double location, double velocity, double boundaryNear, double boundaryFar, double bounceFactor) {
+
+		if (oneDBounce == null) {
+			return;
+		}
 
 		double distanceToBoundary = 0;
-		if (oneDBounce == null) {
-			oneDBounce = new OneDimensionBounce();
-		}
 
-		if ( (velocity > 0) && (location <= boundary) && ((location + velocity) >= boundary)) {
-			distanceToBoundary = (boundary - location);
-			oneDBounce.newLocaton = boundary - ( (velocity - distanceToBoundary) * bounceFactor);
+		//moving to right, to left of near boundary, and will reach near boundary 
+		if ( (velocity > 0) && (location <= boundaryNear) && ((location + velocity) >= boundaryNear)) {
+			distanceToBoundary = (boundaryNear - location);
+			oneDBounce.newLocaton = boundaryNear - ( (velocity - distanceToBoundary) * bounceFactor);
 			oneDBounce.newVelocity = (velocity * bounceFactor * -1);
 			oneDBounce.didBounce = true;
 		}
-		else if (velocity < 0 && (location >= boundary) && ((location + velocity) <= boundary)) {
-			distanceToBoundary = (location - boundary);
-			oneDBounce.newLocaton = boundary - ( (velocity + distanceToBoundary) * bounceFactor);
+		//moving to left, to right of near boundary, and will reach near boundary
+		else if (velocity < 0 && (location >= boundaryNear) && ((location + velocity) <= boundaryNear)) {
+			distanceToBoundary = (location - boundaryNear);
+			oneDBounce.newLocaton = boundaryNear - ( (velocity + distanceToBoundary) * bounceFactor);
 			oneDBounce.newVelocity = (velocity * bounceFactor * -1);
 			oneDBounce.didBounce = true;
+		}
+		//moving to right, to right of near boundary, and will not reach far boundary
+		else if ( (velocity > 0) && (location > boundaryNear) && ((location + velocity) < boundaryFar)) {
+//			//special case, where the location is already within the boundaries; expel the object
+			double boundaryMid = (boundaryNear + boundaryFar) / 2;
+			//to left of midpoint of boundaries
+			if (location < boundaryMid) {
+				oneDBounce.newVelocity = (velocity * bounceFactor * -1);
+				oneDBounce.newLocaton = boundaryNear;
+				oneDBounce.didBounce = true;
+			}			
+		}
+//		//moving to left, to left of near boundary, and will not reach far boundary
+		else if ( (velocity < 0) && (location < boundaryNear) && ((location + velocity) > boundaryFar)) {
+			//special case, where the location is already within the boundaries; expel the object
+			double boundaryMid = (boundaryNear + boundaryFar) / 2;
+			//to left of midpoint of boundaries
+			if (location > boundaryMid) {
+				oneDBounce.newVelocity = (velocity * bounceFactor * -1);
+				oneDBounce.newLocaton = boundaryNear;
+				oneDBounce.didBounce = true;
+			}			
 		}
 		else {
 			oneDBounce.newLocaton = location + velocity;
