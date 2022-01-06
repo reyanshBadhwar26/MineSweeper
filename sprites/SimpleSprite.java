@@ -116,4 +116,10 @@ public class SimpleSprite implements DisplayableSprite {
     	this.centerY += deltaY;
 	}
 
+
+	@Override
+	public void setDispose(boolean dispose) {
+		this.dispose = true;
+	}
+
 }

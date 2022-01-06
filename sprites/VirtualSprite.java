@@ -75,5 +75,10 @@ public class VirtualSprite implements DisplayableSprite {
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
 	}
+
+	@Override
+	public void setDispose(boolean dispose) {
+		//ignore		
+	}
 	
 }
