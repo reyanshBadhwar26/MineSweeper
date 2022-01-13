@@ -18,12 +18,11 @@ public interface Universe {
 	public boolean isComplete();
 	public void setComplete(boolean complete);
 	
-	public Background getBackground();
 	public DisplayableSprite getPlayer1();
 	public boolean centerOnPlayer();
 
 	public ArrayList<DisplayableSprite> getSprites();	
-	
+	public ArrayList<Background> getBackgrounds();		
 
 	public void update(KeyboardInput keyboard, long actual_delta_time);
     

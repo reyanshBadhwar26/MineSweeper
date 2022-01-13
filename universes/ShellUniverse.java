@@ -3,9 +3,9 @@ import java.util.ArrayList;
 public class ShellUniverse implements Universe {
 
 	private boolean complete = false;	
-	private Background background = null;	
 	private DisplayableSprite player1 = null;
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
+	private ArrayList<Background> backgrounds = new ArrayList<Background>();
 
 	public ShellUniverse () {
 
@@ -42,9 +42,9 @@ public class ShellUniverse implements Universe {
 		complete = true;
 	}
 
-	public Background getBackground() {
-		return background;
-	}
+	public ArrayList<Background> getBackgrounds() {
+		return backgrounds;
+	}	
 
 	public DisplayableSprite getPlayer1() {
 		return player1;
@@ -74,6 +74,6 @@ public class ShellUniverse implements Universe {
 
 	public String toString() {
 		return "ShellUniverse";
-	}	
+	}
 
 }
