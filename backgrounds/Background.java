@@ -16,8 +16,8 @@ public interface Background {
 	
 	public double getShiftY();
 	
-	public void setShiftX(int shiftX);
+	public void setShiftX(double shiftX);
 
-	public void setShiftY(int shiftY);
+	public void setShiftY(double shiftY);
 	
 }
