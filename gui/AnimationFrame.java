@@ -151,8 +151,6 @@ public class AnimationFrame extends JFrame {
 			backgrounds = universe.getBackgrounds();
 			centreOnPlayer = universe.centerOnPlayer();
 			this.scale = universe.getScale();
-			this.logicalCenterX = universe.getXCenter();
-			this.logicalCenterY = universe.getYCenter();
 
 			// main game loop
 			while (stop == false && universe.isComplete() == false) {
@@ -188,8 +186,6 @@ public class AnimationFrame extends JFrame {
 				updateControls();
 
 				//REFRESH
-				this.logicalCenterX = universe.getXCenter();
-				this.logicalCenterY = universe.getYCenter();
 				this.repaint();
 			}
 
@@ -272,11 +268,6 @@ public class AnimationFrame extends JFrame {
 				return;
 			}
 
-			if (player1 != null && centreOnPlayer) {
-				logicalCenterX = player1.getCenterX();
-				logicalCenterY = player1.getCenterY();     
-			}
-
 			if (backgrounds != null) {
 				for (Background background: backgrounds) {
 					paintBackground(g, background);
@@ -305,6 +296,15 @@ public class AnimationFrame extends JFrame {
 				return;
 			}
 			
+			if (player1 != null && centreOnPlayer) {
+				logicalCenterX = player1.getCenterX();
+				logicalCenterY = player1.getCenterY();     
+			}
+			else {
+				logicalCenterX = universe.getXCenter();
+				logicalCenterY = universe.getYCenter();
+			}
+
 			//what tile covers the top-left corner?
 			double logicalLeft = (logicalCenterX  - (screenCenterX / scale) - background.getShiftX());
 			double logicalTop =  (logicalCenterY - (screenCenterY / scale) - background.getShiftY()) ;
