@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class CollisionDetection {
 
+	private static BufferedImage defaultImage = new BufferedImage(16,16, BufferedImage.TYPE_INT_RGB);
+	
 	private double bounceFactorX = 1;
 	private double bounceFactorY = 1;
 
@@ -156,8 +158,8 @@ public class CollisionDetection {
 			return false;
 		}
 		
-		BufferedImage bufferedA = (BufferedImage) spriteA.getImage();
-		BufferedImage bufferedB = (BufferedImage) spriteB.getImage();
+		BufferedImage bufferedA = spriteA.getImage() != null ? (BufferedImage) spriteA.getImage() : defaultImage;
+		BufferedImage bufferedB = spriteB.getImage() != null ? (BufferedImage) spriteB.getImage() : defaultImage;
 		
 		int offsetX = (int) (spriteB.getMinX() - (spriteA.getMinX() + deltaAX));
 		int offsetY = (int) (spriteB.getMinY() - (spriteA.getMinY() + deltaAY));
