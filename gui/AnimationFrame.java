@@ -151,8 +151,6 @@ public class AnimationFrame extends JFrame {
 			backgrounds = universe.getBackgrounds();
 			centreOnPlayer = universe.centerOnPlayer();
 			this.scale = universe.getScale();
-			this.logicalCenterX = universe.getXCenter();
-			this.logicalCenterY = universe.getYCenter();
 
 			// main game loop
 			while (stop == false && universe.isComplete() == false) {
@@ -182,14 +180,21 @@ public class AnimationFrame extends JFrame {
 				handleKeyboardInput();
 
 				//UPDATE STATE
-				updateTime();
-				
+				updateTime();				
 				universe.update(keyboard, actual_delta_time);
-				updateControls();
+				
+				//align animation frame with logical universe
+				if (player1 != null && centreOnPlayer) {
+					this.logicalCenterX = player1.getCenterX();
+					this.logicalCenterY = player1.getCenterY();     
+				}
+				else {
+					this.logicalCenterX = universe.getXCenter();
+					this.logicalCenterY = universe.getYCenter();
+				}
 
 				//REFRESH
-				this.logicalCenterX = universe.getXCenter();
-				this.logicalCenterY = universe.getYCenter();
+				updateControls();
 				this.repaint();
 			}
 
@@ -270,11 +275,6 @@ public class AnimationFrame extends JFrame {
 		{	
 			if (universe == null) {
 				return;
-			}
-
-			if (player1 != null && centreOnPlayer) {
-				logicalCenterX = player1.getCenterX();
-				logicalCenterY = player1.getCenterY();     
 			}
 
 			if (backgrounds != null) {
