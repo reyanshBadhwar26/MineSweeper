@@ -6,6 +6,7 @@ public class ShellUniverse implements Universe {
 	private DisplayableSprite player1 = null;
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	private ArrayList<Background> backgrounds = new ArrayList<Background>();
+	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
 	public ShellUniverse () {
 
@@ -62,6 +63,7 @@ public class ShellUniverse implements Universe {
 
 		if (keyboard.keyDownOnce(27)) {
 			complete = true;
+			this.player1.setDispose(true);
 		}
 		
 		for (int i = 0; i < sprites.size(); i++) {
@@ -69,8 +71,35 @@ public class ShellUniverse implements Universe {
 			sprite.update(this, keyboard, actual_delta_time);
     	} 
 		
+		disposeSprites();
 		
 	}
+	
+    protected void disposeSprites() {
+        
+    	//collect a list of sprites to dispose
+    	//this is done in a temporary list to avoid a concurrent modification exception
+		for (int i = 0; i < sprites.size(); i++) {
+			DisplayableSprite sprite = sprites.get(i);
+    		if (sprite.getDispose() == true) {
+    			disposalList.add(sprite);
+    		}
+    	}
+		
+		//go through the list of sprites to dispose
+		//note that the sprites are being removed from the original list
+		for (int i = 0; i < disposalList.size(); i++) {
+			DisplayableSprite sprite = disposalList.get(i);
+			sprites.remove(sprite);
+			System.out.println("Remove: " + sprite.toString());
+    	}
+		
+		//clear disposal list if necessary
+    	if (disposalList.size() > 0) {
+    		disposalList.clear();
+    	}
+    }
+
 
 	public String toString() {
 		return "ShellUniverse";
