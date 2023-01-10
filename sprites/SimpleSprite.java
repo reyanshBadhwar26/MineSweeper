@@ -113,7 +113,6 @@ public class SimpleSprite implements DisplayableSprite {
 		double deltaY = actual_delta_time * 0.001 * velocityY;
     	this.centerY += deltaY;
 
-		System.out.println(ConsoleUtility.describeSpriteCenter(this));
 	}
 
 
