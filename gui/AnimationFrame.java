@@ -24,10 +24,11 @@ public class AnimationFrame extends JFrame {
 	private double logicalCenterX = 0;		
 	private double logicalCenterY = 0;
 
-	private JPanel panel = null;
-	private JButton btnPauseRun;
-	private JLabel lblTop;
-	private JLabel lblBottom;
+	//basic controls on interface... these are protected so that subclasses can access
+	protected JPanel panel = null;
+	protected JButton btnPauseRun;
+	protected JLabel lblTop;
+	protected JLabel lblBottom;
 
 	private static boolean stop = false;
 
@@ -36,11 +37,11 @@ public class AnimationFrame extends JFrame {
 	private long last_refresh_time = 0;
 	private long minimum_delta_time = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
 	private long actual_delta_time = 0;							//MILLISECONDS
-	private long elapsed_time = 0;
+	protected long elapsed_time = 0;
 	private boolean isPaused = false;
 
-	private KeyboardInput keyboard = new KeyboardInput();
-	private Universe universe = null;
+	protected KeyboardInput keyboard = new KeyboardInput();
+	protected Universe universe = null;
 
 	//local (and direct references to various objects in universe ... should reduce lag by avoiding dynamic lookup
 	private Animation animation = null;
@@ -227,7 +228,7 @@ public class AnimationFrame extends JFrame {
 
 	}
 
-	private void updateControls() {
+	protected void updateControls() {
 		
 		this.lblTop.setText(String.format("Time: %9.3f;  centerX: %5d; centerY: %5d;  scale: %3.3f", elapsed_time / 1000.0, screenCenterX, screenCenterY, scale));
 		this.lblBottom.setText(Integer.toString(universeLevel));
