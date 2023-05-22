@@ -469,8 +469,6 @@ public class AnimationFrame extends JFrame {
 	}
 	
 	protected void contentPane_mouseMoved(MouseEvent e) {
-//		MouseInput.screenX = e.getX();
-//		MouseInput.screenY = e.getY();
 		Point point = this.getContentPane().getMousePosition();
 		if (point != null) {
 			MouseInput.screenX = point.x;		
