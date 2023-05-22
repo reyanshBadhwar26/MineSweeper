@@ -9,16 +9,19 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseMotionAdapter;
 
-
 public class AnimationFrame extends JFrame {
 
 	final public static int FRAMES_PER_SECOND = 60;
+	final long REFRESH_TIME = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
+	final boolean DISPLAY_TIMING = true;
+
 	final public static int SCREEN_HEIGHT = 600;
 	final public static int SCREEN_WIDTH = 800;
 
 	private int screenCenterX = SCREEN_WIDTH / 2;
 	private int screenCenterY = SCREEN_HEIGHT / 2;
 
+	
 	private double scale = 1;
 	//point in universe on which the screen will center
 	private double logicalCenterX = 0;		
@@ -32,12 +35,8 @@ public class AnimationFrame extends JFrame {
 
 	private static boolean stop = false;
 
-	private long current_time = 0;								//MILLISECONDS
-	private long next_refresh_time = 0;							//MILLISECONDS
-	private long last_refresh_time = 0;
-	private long minimum_delta_time = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
-	private long actual_delta_time = 0;							//MILLISECONDS
-	protected long elapsed_time = 0;
+	protected long total_elapsed_time = 0;
+	protected long lastRefreshTime = 0;
 	private boolean isPaused = false;
 
 	protected KeyboardInput keyboard = new KeyboardInput();
@@ -160,6 +159,8 @@ public class AnimationFrame extends JFrame {
 	}	
 	private void animationLoop() {
 
+		long deltaTime = 0;
+		
 		universe = animation.getNextUniverse();
 		universeLevel++;
 
@@ -174,12 +175,12 @@ public class AnimationFrame extends JFrame {
 			// main game loop
 			while (stop == false && universe.isComplete() == false) {
 
-				//adapted from http://www.java-gaming.org/index.php?topic=24220.0
-				last_refresh_time = System.currentTimeMillis();
-				next_refresh_time = current_time + minimum_delta_time;
+				if (DISPLAY_TIMING == true) System.out.println(String.format("animation loop: %10s @ %6d", "sleep", System.currentTimeMillis() % 1000000));
 
+				//adapted from http://www.java-gaming.org/index.php?topic=24220.0
+				long target_wake_time = System.currentTimeMillis() + REFRESH_TIME;
 				//sleep until the next refresh time
-				while (current_time < next_refresh_time)
+				while (System.currentTimeMillis() < target_wake_time)
 				{
 					//allow other threads (i.e. the Swing thread) to do its work
 					Thread.yield();
@@ -190,18 +191,25 @@ public class AnimationFrame extends JFrame {
 					catch(Exception e) {    					
 					} 
 
-					//track current time
-					current_time = System.currentTimeMillis();
 				}
 
+				if (DISPLAY_TIMING == true) System.out.println(String.format("animation loop: %10s @ %6d  (+%4d ms)", "wake", System.currentTimeMillis() % 1000000, System.currentTimeMillis() - lastRefreshTime));
+
+				//track time that has elapsed since the last update, and note the refresh time
+				deltaTime = (isPaused ? 0 : System.currentTimeMillis() - lastRefreshTime);
+				lastRefreshTime = System.currentTimeMillis();
+				total_elapsed_time += deltaTime;
+				
 				//read input
 				keyboard.poll();
 				handleKeyboardInput();
 
-				//UPDATE STATE
-				updateTime();				
-				universe.update(keyboard, actual_delta_time);
+				//update logical
+				universe.update(keyboard, deltaTime);
+				if (DISPLAY_TIMING == true) System.out.println(String.format("animation loop: %10s @ %6d  (+%4d ms)", "logic", System.currentTimeMillis() % 1000000, System.currentTimeMillis() - lastRefreshTime));
 				
+				//update interface
+				updateControls();
 				//align animation frame with logical universe
 				if (player1 != null && centreOnPlayer) {
 					this.logicalCenterX = player1.getCenterX();
@@ -212,9 +220,8 @@ public class AnimationFrame extends JFrame {
 					this.logicalCenterY = universe.getYCenter();
 				}
 
-				//REFRESH
-				updateControls();
 				this.repaint();
+
 			}
 
 			universe = animation.getNextUniverse();
@@ -230,20 +237,11 @@ public class AnimationFrame extends JFrame {
 
 	protected void updateControls() {
 		
-		this.lblTop.setText(String.format("Time: %9.3f;  centerX: %5d; centerY: %5d;  scale: %3.3f", elapsed_time / 1000.0, screenCenterX, screenCenterY, scale));
+		this.lblTop.setText(String.format("Time: %9.3f;  centerX: %5d; centerY: %5d;  scale: %3.3f", total_elapsed_time / 1000.0, screenCenterX, screenCenterY, scale));
 		this.lblBottom.setText(Integer.toString(universeLevel));
 		if (universe != null) {
 			this.lblBottom.setText(universe.toString());
 		}
-
-	}
-
-	private void updateTime() {
-
-		current_time = System.currentTimeMillis();
-		actual_delta_time = (isPaused ? 0 : current_time - last_refresh_time);
-		last_refresh_time = current_time;
-		elapsed_time += actual_delta_time;
 
 	}
 
@@ -317,6 +315,9 @@ public class AnimationFrame extends JFrame {
 					}
 				}				
 			}
+			
+			if (DISPLAY_TIMING == true) System.out.println(String.format("animation loop: %10s @ %6d  (+%4d ms)", "interface", System.currentTimeMillis() % 1000000, System.currentTimeMillis() - lastRefreshTime));
+			
 		}
 		
 		private void paintBackground(Graphics g, Background background) {
@@ -418,7 +419,6 @@ public class AnimationFrame extends JFrame {
 		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			MouseInput.rightButtonDown = true;
 		} else {
-			System.out.println(e.getButton());
 			//DO NOTHING
 		}
 	}
