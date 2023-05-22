@@ -9,6 +9,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseMotionAdapter;
 
+/*
+ * This class represents the 'graphical user interface' or 'presentation' layer or 'frame'. Its job is to continuously 
+ * read input from the user (i.e. keyboard, mouse) and to render (draw) a universe or 'logical' layer. Also, it
+ * continuously prompts the logical layer to update itself based on the number of milliseconds that have elapsed.
+ * 
+ * The presentation layer generally does not try to affect the logical layer; most information
+ * passes "upwards" from the logical layer to the presentation layer.
+ */
+
 public class AnimationFrame extends JFrame {
 
 	final public static int FRAMES_PER_SECOND = 60;
@@ -22,6 +31,7 @@ public class AnimationFrame extends JFrame {
 	private int screenCenterY = SCREEN_HEIGHT / 2;
 
 	
+	//scale at which to render the universe. When 1, each logical unit represents 1 pixel in both x and y dimension
 	private double scale = 1;
 	//point in universe on which the screen will center
 	private double logicalCenterX = 0;		
@@ -51,6 +61,10 @@ public class AnimationFrame extends JFrame {
 	boolean centreOnPlayer = false;
 	int universeLevel = 0;
 	
+	/*
+	 * Much of the following constructor uses a library called Swing to create various graphical controls. You do not need
+	 * to modify this code to create an animation, but certainly many custom controls could be added.
+	 */
 	public AnimationFrame(Animation animation)
 	{
 		super("");
@@ -142,7 +156,11 @@ public class AnimationFrame extends JFrame {
 
 	}
 
-	public void start()
+	/* 
+	 * The entry point into an Animation. The presentation (gui) and the logical layers should run on separate
+	 * threads. This allows the presentation layer to remain responsive to user input while the logical is updating
+	 * its state. The universe (a.k.a. logical) thread is created below.
+	 */	public void start()
 	{
 		Thread thread = new Thread()
 		{
@@ -156,7 +174,21 @@ public class AnimationFrame extends JFrame {
 		thread.start();
 		System.out.println("main() complete");
 
-	}	
+	}
+	 
+	/*
+	 * The animationLoop runs on the logical thread, and is only active when the universe needs to be
+	 * updated. There are actually two loops here. The outer loop cycles through all universes as provided
+	 * by the animation. Whenever a universe is 'complete', the animation is asked for the next universe;
+	 * if there is none, then the loop exits and this method terminates
+	 * 
+	 * The inner loop attempts to update the universe regularly, whenever enough milliseconds have
+	 * elapsed to move to the next 'frame' (i.e. the refresh rate). Once the universe has updated itself,
+	 * the code then moves to a rendering phase where the universe is rendered to the gui and the
+	 * controls updated. These two steps may take several milliseconds, but hopefully no more than the refresh rate.
+	 * When the refresh has finished, the loop (and thus the thread) goes to sleep until the next
+	 * refresh time. 
+	 */
 	private void animationLoop() {
 
 		long deltaTime = 0;
@@ -287,6 +319,16 @@ public class AnimationFrame extends JFrame {
 		}		
 	}
 
+	/*
+	 * This method will run whenever the universe needs to be rendered. The animation loop calls it
+	 * by invoking the repaint() method.
+	 * 
+	 * The work is reasonably simple. First, all backgrounds are rendered from "furthest" to "closest"
+	 * Then, all sprites are rendered in order. Observe that the logical coordinates are continuously
+	 * being translated to screen coordinates. Thus, how the universe is rendered is determined by
+	 * the gui, but what is being rendered is determined by the universe. In other words, a sprite may
+	 * be in a given logical location, but where it is rendered also depends on scale and camera placement
+	 */
 	class DrawPanel extends JPanel {
 
 		public void paintComponent(Graphics g)
@@ -320,6 +362,16 @@ public class AnimationFrame extends JFrame {
 			
 		}
 		
+		/*
+		 * The algorithm for rendering a background may appear complex, but you can think of it as
+		 * 'tiling' the screen from top left to bottom right. Each time, the gui determines a screen coordinate
+		 * that has not yet been covered. It then asks the background (which is part of the universe) for the tile
+		 * that would cover the equivalent logical coordinate. This tile has height and width, which allows
+		 * the gui to draw the tile and to then move to the screen coordinate at the same minY and to the right of this tile.
+		 * Again, the background is asked for the tile that would cover this coordinate.
+		 * When eventually this coordinate is off the right hand edge of the screen, then move to the left of the screen
+		 * but below the previously drawn tile. Repeat until the entire panel is covered.
+		 */
 		private void paintBackground(Graphics g, Background background) {
 			
 			if ((g == null) || (background == null)) {
