@@ -117,7 +117,7 @@ public class AnimationFrame extends JFrame {
 				contentPane_mouseMoved(e);
 			}
 		});
-		
+
 		Container cp = getContentPane();
 		cp.setBackground(Color.BLACK);
 		cp.setLayout(null);
@@ -162,7 +162,8 @@ public class AnimationFrame extends JFrame {
 	 * The entry point into an Animation. The presentation (gui) and the logical layers should run on separate
 	 * threads. This allows the presentation layer to remain responsive to user input while the logical is updating
 	 * its state. The universe (a.k.a. logical) thread is created below.
-	 */	public void start()
+	 */	
+	public void start()
 	{
 		Thread thread = new Thread()
 		{
@@ -174,10 +175,21 @@ public class AnimationFrame extends JFrame {
 		};
 
 		thread.start();
+		//start the animation loop so that it can initialize at the same time as a title screen being visible
+		//as it runs on a separate thread, it will execute asynchronously
+		displayTitleScreen();
+				
 		System.out.println("main() complete");
 
 	}
-	 
+	
+	/*
+	 * You can add a title screen here using a JDialog or similar
+	 */
+	protected void displayTitleScreen() {
+		
+	}
+	
 	/*
 	 * The animationLoop runs on the logical thread, and is only active when the universe needs to be
 	 * updated. There are actually two loops here. The outer loop cycles through all universes as provided
@@ -258,7 +270,7 @@ public class AnimationFrame extends JFrame {
 
 			}
 
-			universe = animation.getNextUniverse();
+			handleUniverseComplete();
 			keyboard.poll();
 
 		}
@@ -269,6 +281,9 @@ public class AnimationFrame extends JFrame {
 
 	}
 
+	private void handleUniverseComplete() {
+		universe = animation.getNextUniverse();		
+	}
 	protected void updateControls() {
 		
 		this.lblTop.setText(String.format("Time: %9.3f;  centerX: %5d; centerY: %5d;  scale: %3.3f", total_elapsed_time / 1000.0, screenCenterX, screenCenterY, scale));
