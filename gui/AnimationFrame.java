@@ -30,6 +30,7 @@ public class AnimationFrame extends JFrame {
 	private int screenCenterX = SCREEN_WIDTH / 2;
 	private int screenCenterY = SCREEN_HEIGHT / 2;
 
+	final private static boolean SHOW_GRID = true;
 	
 	//scale at which to render the universe. When 1, each logical unit represents 1 pixel in both x and y dimension
 	private double scale = 1;
@@ -357,6 +358,25 @@ public class AnimationFrame extends JFrame {
 					}
 				}				
 			}
+			
+			if (SHOW_GRID) {
+				for (int x = 0; x <= SCREEN_WIDTH; x+=50) {
+					if (x % 100 == 0) {
+						g.setColor(Color.GRAY);						
+					} else {
+						g.setColor(Color.DARK_GRAY);						
+					}					
+					g.drawLine(x, 0, x, SCREEN_HEIGHT);
+				}
+				for (int y = 0; y <= SCREEN_HEIGHT; y+= 50) {
+					if (y % 100 == 0) {
+						g.setColor(Color.GRAY);						
+					} else {
+						g.setColor(Color.DARK_GRAY);						
+					}
+					g.drawLine(0, y, SCREEN_WIDTH, y);
+				}
+			}			
 			
 			if (DISPLAY_TIMING == true) System.out.println(String.format("animation loop: %10s @ %6d  (+%4d ms)", "interface", System.currentTimeMillis() % 1000000, System.currentTimeMillis() - lastRefreshTime));
 			
