@@ -48,6 +48,7 @@ public class AnimationFrame extends JFrame {
 
 	protected long total_elapsed_time = 0;
 	protected long lastRefreshTime = 0;
+	protected long deltaTime = 0;
 	private boolean isPaused = false;
 
 	protected KeyboardInput keyboard = new KeyboardInput();
@@ -192,7 +193,7 @@ public class AnimationFrame extends JFrame {
 	 */
 	private void animationLoop() {
 
-		long deltaTime = 0;
+		lastRefreshTime = System.currentTimeMillis();
 		
 		universe = animation.getNextUniverse();
 		universeLevel++;
