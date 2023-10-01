@@ -22,7 +22,6 @@ public class AnimationFrame extends JFrame {
 
 	final public static int FRAMES_PER_SECOND = 60;
 	final long REFRESH_TIME = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
-	final boolean DISPLAY_TIMING = true;
 
 	final public static int SCREEN_HEIGHT = 600;
 	final public static int SCREEN_WIDTH = 800;
@@ -30,7 +29,8 @@ public class AnimationFrame extends JFrame {
 	private int screenCenterX = SCREEN_WIDTH / 2;
 	private int screenCenterY = SCREEN_HEIGHT / 2;
 
-	final private static boolean SHOW_GRID = true;
+	private boolean SHOW_GRID = true;
+	private boolean DISPLAY_TIMING = false;
 	
 	//scale at which to render the universe. When 1, each logical unit represents 1 pixel in both x and y dimension
 	private double scale = 1;
@@ -49,7 +49,7 @@ public class AnimationFrame extends JFrame {
 	protected long total_elapsed_time = 0;
 	protected long lastRefreshTime = 0;
 	protected long deltaTime = 0;
-	private boolean isPaused = false;
+	protected boolean isPaused = false;
 
 	protected KeyboardInput keyboard = new KeyboardInput();
 	protected Universe universe = null;
@@ -307,33 +307,39 @@ public class AnimationFrame extends JFrame {
 
 	private void handleKeyboardInput() {
 		
-		if (keyboard.keyDown(80) && ! isPaused) {
+		if (keyboard.keyDown(KeyboardInput.KEY_P) && ! isPaused) {
 			btnPauseRun_mouseClicked(null);	
 		}
-		if (keyboard.keyDown(79) && isPaused ) {
+		if (keyboard.keyDown(KeyboardInput.KEY_O) && isPaused ) {
 			btnPauseRun_mouseClicked(null);
 		}
-		if (keyboard.keyDown(112)) {
+		if (keyboard.keyDown(KeyboardInput.KEY_F1)) {
 			scale *= 1.01;
 			contentPane_mouseMoved(null);
 		}
-		if (keyboard.keyDown(113)) {
+		if (keyboard.keyDown(KeyboardInput.KEY_F2)) {
 			scale /= 1.01;
 			contentPane_mouseMoved(null);
 		}
 		
-		if (keyboard.keyDown(65)) {
+		if (keyboard.keyDown(KeyboardInput.KEY_A)) {
 			screenCenterX += 1;
 		}
-		if (keyboard.keyDown(68)) {
+		if (keyboard.keyDown(KeyboardInput.KEY_D)) {
 			screenCenterX -= 1;
 		}
-		if (keyboard.keyDown(83)) {
+		if (keyboard.keyDown(KeyboardInput.KEY_S)) {
 			screenCenterY += 1;
 		}
-		if (keyboard.keyDown(88)) {
+		if (keyboard.keyDown(KeyboardInput.KEY_X)) {
 			screenCenterY -= 1;
-		}		
+		}
+		if (keyboard.keyDownOnce(KeyboardInput.KEY_G)) {
+			this.SHOW_GRID = !this.SHOW_GRID;
+		}
+		if (keyboard.keyDownOnce(KeyboardInput.KEY_T)) {
+			this.DISPLAY_TIMING = !this.DISPLAY_TIMING;
+		}
 	}
 
 	/*
