@@ -26,8 +26,8 @@ public class AnimationFrame extends JFrame {
 	final public static int SCREEN_HEIGHT = 600;
 	final public static int SCREEN_WIDTH = 800;
 
-	private int screenCenterX = SCREEN_WIDTH / 2;
-	private int screenCenterY = SCREEN_HEIGHT / 2;
+	private int screenOffsetX = SCREEN_WIDTH / 2;
+	private int screenOffsetY = SCREEN_HEIGHT / 2;
 
 	private boolean SHOW_GRID = true;
 	private boolean DISPLAY_TIMING = false;
@@ -286,7 +286,7 @@ public class AnimationFrame extends JFrame {
 	}
 	protected void updateControls() {
 		
-		this.lblTop.setText(String.format("Time: %9.3f;  centerX: %5d; centerY: %5d;  scale: %3.3f", total_elapsed_time / 1000.0, screenCenterX, screenCenterY, scale));
+		this.lblTop.setText(String.format("Time: %9.3f;  offsetX: %5d; offsetY: %5d;  scale: %3.3f", total_elapsed_time / 1000.0, screenOffsetX, screenOffsetY, scale));
 		this.lblBottom.setText(Integer.toString(universeLevel));
 		if (universe != null) {
 			this.lblBottom.setText(universe.toString());
@@ -323,16 +323,16 @@ public class AnimationFrame extends JFrame {
 		}
 		
 		if (keyboard.keyDown(KeyboardInput.KEY_A)) {
-			screenCenterX += 1;
+			screenOffsetX += 1;
 		}
 		if (keyboard.keyDown(KeyboardInput.KEY_D)) {
-			screenCenterX -= 1;
+			screenOffsetX -= 1;
 		}
 		if (keyboard.keyDown(KeyboardInput.KEY_S)) {
-			screenCenterY += 1;
+			screenOffsetY += 1;
 		}
 		if (keyboard.keyDown(KeyboardInput.KEY_X)) {
-			screenCenterY -= 1;
+			screenOffsetY -= 1;
 		}
 		if (keyboard.keyDownOnce(KeyboardInput.KEY_G)) {
 			this.SHOW_GRID = !this.SHOW_GRID;
@@ -421,8 +421,8 @@ public class AnimationFrame extends JFrame {
 			}
 			
 			//what tile covers the top-left corner?
-			double logicalLeft = (logicalCenterX  - (screenCenterX / scale) - background.getShiftX());
-			double logicalTop =  (logicalCenterY - (screenCenterY / scale) - background.getShiftY()) ;
+			double logicalLeft = (logicalCenterX  - (screenOffsetX / scale) - background.getShiftX());
+			double logicalTop =  (logicalCenterY - (screenOffsetY / scale) - background.getShiftY()) ;
 						
 			int row = background.getRow((int)(logicalTop - background.getShiftY() ));
 			int col = background.getCol((int)(logicalLeft - background.getShiftX()  ));
@@ -468,24 +468,24 @@ public class AnimationFrame extends JFrame {
 	}
 
 	private int translateToScreenX(double logicalX) {
-		return screenCenterX + scaleLogicalX(logicalX - logicalCenterX);
+		return screenOffsetX + scaleLogicalX(logicalX - logicalCenterX);
 	}		
 	private int scaleLogicalX(double logicalX) {
 		return (int) Math.round(scale * logicalX);
 	}
 	private int translateToScreenY(double logicalY) {
-		return screenCenterY + scaleLogicalY(logicalY - logicalCenterY);
+		return screenOffsetY + scaleLogicalY(logicalY - logicalCenterY);
 	}		
 	private int scaleLogicalY(double logicalY) {
 		return (int) Math.round(scale * logicalY);
 	}
 
 	private double translateToLogicalX(int screenX) {
-		int offset = screenX - screenCenterX;
+		int offset = screenX - screenOffsetX;
 		return offset / scale;
 	}
 	private double translateToLogicalY(int screenY) {
-		int offset = screenY - screenCenterY;
+		int offset = screenY - screenOffsetY;
 		return offset / scale;			
 	}
 	
