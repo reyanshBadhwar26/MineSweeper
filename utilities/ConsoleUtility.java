@@ -24,12 +24,11 @@ public class ConsoleUtility {
 	}
 
 	public static String describeUniverse(Universe universe) {
-		return String.format("type: %20s; center: (%7.2f,%7.2f); isComplete = %5b; centerOnPlayer = %5b", 
+		return String.format("type: %20s; center: (%7.2f,%7.2f); isComplete = %5b", 
 				universe.getClass().toString(), 
 				universe.getXCenter(), 
 				universe.getYCenter(), 
-				universe.isComplete(), 
-				universe.centerOnPlayer());
+				universe.isComplete());
 	}
 	
 	public static String describeBackground(Background background) {

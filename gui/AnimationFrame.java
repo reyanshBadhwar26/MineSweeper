@@ -26,6 +26,9 @@ public class AnimationFrame extends JFrame {
 	final public static int SCREEN_HEIGHT = 600;
 	final public static int SCREEN_WIDTH = 800;
 
+	//These variables control where the screen is centered in relation to the logical center of universe.
+	//Generally it makes sense to have these start at half screen width and height, so that the logical
+	//center is rendered in the center of the screen. Changing them will 'pan' the screen.
 	private int screenOffsetX = SCREEN_WIDTH / 2;
 	private int screenOffsetY = SCREEN_HEIGHT / 2;
 
@@ -60,7 +63,6 @@ public class AnimationFrame extends JFrame {
 	private ArrayList<DisplayableSprite> sprites = null;
 	private ArrayList<Background> backgrounds = null;
 	private Background background = null;
-	boolean centreOnPlayer = false;
 	int universeLevel = 0;
 	
 	/*
@@ -215,7 +217,6 @@ public class AnimationFrame extends JFrame {
 			sprites = universe.getSprites();
 			player1 = universe.getPlayer1();
 			backgrounds = universe.getBackgrounds();
-			centreOnPlayer = universe.centerOnPlayer();
 			this.scale = universe.getScale();
 
 			// main game loop
@@ -256,15 +257,8 @@ public class AnimationFrame extends JFrame {
 				
 				//update interface
 				updateControls();
-				//align animation frame with logical universe
-				if (player1 != null && centreOnPlayer) {
-					this.logicalCenterX = player1.getCenterX();
-					this.logicalCenterY = player1.getCenterY();     
-				}
-				else {
-					this.logicalCenterX = universe.getXCenter();
-					this.logicalCenterY = universe.getYCenter();
-				}
+				this.logicalCenterX = universe.getXCenter();
+				this.logicalCenterY = universe.getYCenter();
 
 				this.repaint();
 
