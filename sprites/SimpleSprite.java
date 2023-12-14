@@ -13,7 +13,7 @@ public class SimpleSprite implements DisplayableSprite {
 	private double height = 50;
 	private boolean dispose = false;	
 
-	private final double VELOCITY = 200;
+	private final double VELOCITY = 300;
 
 	public SimpleSprite(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
