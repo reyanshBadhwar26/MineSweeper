@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class SimpleSprite implements DisplayableSprite {
+public class TileSprite implements DisplayableSprite {
 
 	private static Image image;	
 	private double centerX = 0;
@@ -15,7 +15,7 @@ public class SimpleSprite implements DisplayableSprite {
 
 	private final double VELOCITY = 300;
 
-	public SimpleSprite(double centerX, double centerY, double height, double width) {
+	public TileSprite(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
 		
 		this.height = height;
@@ -23,7 +23,7 @@ public class SimpleSprite implements DisplayableSprite {
 	}
 
 	
-	public SimpleSprite(double centerX, double centerY) {
+	public TileSprite(double centerX, double centerY) {
 
 		this.centerX = centerX;
 		this.centerY = centerY;
@@ -90,9 +90,14 @@ public class SimpleSprite implements DisplayableSprite {
 		double velocityX = 0;
 		double velocityY = 0;
 		
+		
+		
+		if (MouseInput.leftButtonDown == true && MouseInput.logicalX == this.centerX && MouseInput.logicalY == this.centerY) {
+			setDispose(true);
+		}
 		//LEFT	
 		if (keyboard.keyDown(37)) {
-			velocityX = -VELOCITY;
+			velocityX = -VELOCITY; 
 		}
 		//UP
 		if (keyboard.keyDown(38)) {
@@ -106,6 +111,8 @@ public class SimpleSprite implements DisplayableSprite {
 		if (keyboard.keyDown(40)) {
 			velocityY += VELOCITY;			
 		}
+		
+		
 
 		double deltaX = actual_delta_time * 0.001 * velocityX;
         this.centerX += deltaX;
