@@ -3,17 +3,28 @@ import java.util.ArrayList;
 public class ShellUniverse implements Universe {
 
 	private boolean complete = false;	
+	private DisplayableSprite basicTile = null;
 	private DisplayableSprite player1 = null;
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	private ArrayList<Background> backgrounds = new ArrayList<Background>();
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
+	//Change these values to make the tiles be 8x8
+	public final int TILE_START_POINT = -375;
+	public final int TILE_STOP_POINT = 400;
+	public final double TILE_WIDTH = 50.15;
+	
 	public ShellUniverse () {
 
 		this.setXCenter(0);
 		this.setYCenter(0);
 		player1 = new TileSprite(0,0);
 		sprites.add(player1);
+		
+		for (double i = TILE_START_POINT; i <= TILE_STOP_POINT; i = i + TILE_WIDTH) {
+			basicTile = new TileSprite(i, 100);
+			sprites.add(basicTile);
+		}
 			
 	}
 
