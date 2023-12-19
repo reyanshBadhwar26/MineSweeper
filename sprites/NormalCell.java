@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class TileSprite implements DisplayableSprite {
+public class NormalCell implements DisplayableSprite {
 
 	private static Image image;	
 	private double centerX = 0;
@@ -15,7 +15,7 @@ public class TileSprite implements DisplayableSprite {
 
 	private final double VELOCITY = 300;
 
-	public TileSprite(double centerX, double centerY, double height, double width) {
+	public NormalCell(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
 		
 		this.height = height;
@@ -23,14 +23,14 @@ public class TileSprite implements DisplayableSprite {
 	}
 
 	
-	public TileSprite(double centerX, double centerY) {
+	public NormalCell(double centerX, double centerY) {
 
 		this.centerX = centerX;
 		this.centerY = centerY;
 		
 		if (image == null) {
 			try {
-				image = ImageIO.read(new File("res/simple-sprite.png"));
+				image = ImageIO.read(new File("res/normalTile.png"));
 			}
 			catch (IOException e) {
 				System.out.println(e.toString());
