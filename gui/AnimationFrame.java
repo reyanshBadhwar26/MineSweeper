@@ -32,7 +32,7 @@ public class AnimationFrame extends JFrame {
 	private int screenOffsetX = SCREEN_WIDTH / 2;
 	private int screenOffsetY = SCREEN_HEIGHT / 2;
 
-	private boolean SHOW_GRID = true;
+	private boolean SHOW_GRID = false;
 	private boolean DISPLAY_TIMING = false;
 	
 	//scale at which to render the universe. When 1, each logical unit represents 1 pixel in both x and y dimension

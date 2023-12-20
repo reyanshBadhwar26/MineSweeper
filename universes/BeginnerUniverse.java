@@ -10,10 +10,13 @@ public class BeginnerUniverse implements Universe {
 	private Background background;
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
-	//Change these values to make the tiles be 8x8
-	public final int TILE_START_POINT = -200;
-	public final int TILE_STOP_POINT = 250;
-	public final double TILE_WIDTH = 50.15;
+	//Change these values to make the tiles be 10x10
+	public final int TILE_START_X_POINT = -250;
+	public final int TILE_STOP_X_POINT = 250;
+	public final int TILE_START_Y_POINT = -150;
+	public final int TILE_STOP_Y_POINT = 250;	
+	public final int TILE_WIDTH = 50;
+	public final int TILE_HEIGHT = 50;
 	
 	public BeginnerUniverse () {
 
@@ -22,11 +25,14 @@ public class BeginnerUniverse implements Universe {
 		this.setXCenter(0);
 		this.setYCenter(0);
 		player1 = new NormalCell(0,0);
-		sprites.add(player1);
+		//sprites.add(player1);
 		
-		for (double i = TILE_START_POINT; i <= TILE_STOP_POINT; i = i + TILE_WIDTH) {
-			basicTile = new NormalCell(i, 100);
-			sprites.add(basicTile);
+		for (double i = TILE_START_X_POINT; i <= TILE_STOP_X_POINT; i = i + TILE_WIDTH) {
+			for (int j = TILE_START_Y_POINT; j <= TILE_STOP_Y_POINT; j = j + TILE_HEIGHT) {
+				basicTile = new NormalCell(i, j);
+				sprites.add(basicTile);
+			}
+
 		}
 			
 	}

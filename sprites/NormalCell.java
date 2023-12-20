@@ -90,11 +90,18 @@ public class NormalCell implements DisplayableSprite {
 		double velocityX = 0;
 		double velocityY = 0;
 		
+		if (MouseInput.leftButtonDown == true
+				&& CollisionDetection.overlaps(this.getMinX(), this.getMinY(), this.getMaxX(), this.getMaxY(),
+						MouseInput.logicalX, MouseInput.logicalY, MouseInput.logicalX, MouseInput.logicalY)) {
+			this.setDispose(true);
+		} 
 		
+//		if (MouseInput.rightButtonDown == true
+//				&& CollisionDetection.overlaps(this.getMinX(), this.getMinY(), this.getMaxX(), this.getMaxY(),
+//						MouseInput.logicalX, MouseInput.logicalY, MouseInput.logicalX, MouseInput.logicalY)) {
+//			System.out.println("A");
+//		}
 		
-		if (MouseInput.leftButtonDown == true && MouseInput.logicalX == this.centerX && MouseInput.logicalY == this.centerY) {
-			setDispose(true);
-		}
 		//LEFT	
 		if (keyboard.keyDown(37)) {
 			velocityX = -VELOCITY; 

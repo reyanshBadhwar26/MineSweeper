@@ -7,8 +7,8 @@ import javax.imageio.ImageIO;
 
 public class BeginnerBackground implements Background {
 
-	protected static int TILE_WIDTH = 800;
-	protected static int TILE_HEIGHT = 800;
+	protected static int TILE_WIDTH = 810;
+	protected static int TILE_HEIGHT = 700;
 
 	private Image backgroundPic;
 	private int maxCols = 0;
@@ -84,7 +84,7 @@ public class BeginnerBackground implements Background {
 
 	@Override
 	public double getShiftX() {
-		return -200;
+		return -400;
 	}
 
 	@Override
