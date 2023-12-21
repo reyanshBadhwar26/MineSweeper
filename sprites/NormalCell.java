@@ -94,6 +94,7 @@ public class NormalCell implements DisplayableSprite {
 				&& CollisionDetection.overlaps(this.getMinX(), this.getMinY(), this.getMaxX(), this.getMaxY(),
 						MouseInput.logicalX, MouseInput.logicalY, MouseInput.logicalX, MouseInput.logicalY)) {
 			this.setDispose(true);
+			
 		} 
 		
 //		if (MouseInput.rightButtonDown == true
@@ -102,22 +103,22 @@ public class NormalCell implements DisplayableSprite {
 //			System.out.println("A");
 //		}
 		
-		//LEFT	
-		if (keyboard.keyDown(37)) {
-			velocityX = -VELOCITY; 
-		}
-		//UP
-		if (keyboard.keyDown(38)) {
-			velocityY = -VELOCITY;			
-		}
-		// RIGHT
-		if (keyboard.keyDown(39)) {
-			velocityX += VELOCITY;
-		}
-		// DOWN
-		if (keyboard.keyDown(40)) {
-			velocityY += VELOCITY;			
-		}
+//		//LEFT	
+//		if (keyboard.keyDown(37)) {
+//			velocityX = -VELOCITY; 
+//		}
+//		//UP
+//		if (keyboard.keyDown(38)) {
+//			velocityY = -VELOCITY;			
+//		}
+//		// RIGHT
+//		if (keyboard.keyDown(39)) {
+//			velocityX += VELOCITY;
+//		}
+//		// DOWN
+//		if (keyboard.keyDown(40)) {
+//			velocityY += VELOCITY;			
+//		}
 		
 		
 
