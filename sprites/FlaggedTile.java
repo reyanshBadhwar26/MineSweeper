@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class FlagCell implements DisplayableSprite {
+public class FlaggedTile implements DisplayableSprite {
 
 	private static Image image;	
 	private double centerX = 0;
@@ -15,27 +15,27 @@ public class FlagCell implements DisplayableSprite {
 
 	private final double VELOCITY = 300;
 
-	public FlagCell(double centerX, double centerY, double height, double width) {
+	public FlaggedTile(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
 		
 		this.height = height;
 		this.width = width;
 	}
 
-	
-	public FlagCell(double centerX, double centerY) {
+	public FlaggedTile(double centerX, double centerY) {
 
 		this.centerX = centerX;
 		this.centerY = centerY;
 		
 		if (image == null) {
 			try {
-				image = ImageIO.read(new File("res/flagTile.png"));
+				image = ImageIO.read(new File(String.format("res/flagTile.png")));
 			}
 			catch (IOException e) {
 				System.out.println(e.toString());
 			}		
-		}		
+		}	
+		
 	}
 
 	public Image getImage() {
@@ -80,45 +80,21 @@ public class FlagCell implements DisplayableSprite {
 		return centerY;
 	};
 	
-	
 	public boolean getDispose() {
 		return dispose;
 	}
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
 		
-		double velocityX = 0;
-		double velocityY = 0;
-		
-		
-		
-		if (MouseInput.leftButtonDown == true && MouseInput.logicalX == this.centerX && MouseInput.logicalY == this.centerY) {
-			setDispose(true);
-		}
-		//LEFT	
-		if (keyboard.keyDown(37)) {
-			velocityX = -VELOCITY; 
-		}
-		//UP
-		if (keyboard.keyDown(38)) {
-			velocityY = -VELOCITY;			
-		}
-		// RIGHT
-		if (keyboard.keyDown(39)) {
-			velocityX += VELOCITY;
-		}
-		// DOWN
-		if (keyboard.keyDown(40)) {
-			velocityY += VELOCITY;			
-		}
-		
-		
+		if (MouseInput.rightButtonDown == true
+				&& CollisionDetection.overlaps(this.getMinX(), this.getMinY(), this.getMaxX(), this.getMaxY(),
+						MouseInput.logicalX, MouseInput.logicalY, MouseInput.logicalX, MouseInput.logicalY)) {
+			this.setDispose(true);
+			NormalCell sprite = new NormalCell(this.centerX, this.centerY);
+			universe.addSprite(sprite);
+			System.out.println("BRUHH WHAT");
 
-		double deltaX = actual_delta_time * 0.001 * velocityX;
-        this.centerX += deltaX;
-		
-		double deltaY = actual_delta_time * 0.001 * velocityY;
-    	this.centerY += deltaY;
+		}
 
 	}
 

@@ -124,4 +124,9 @@ public class BeginnerUniverse implements Universe {
 		return "MineSweeperBasic";
 	}
 
+	@Override
+	public void addSprite(DisplayableSprite sprite) {
+		sprites.add(sprite);
+	}
+
 }

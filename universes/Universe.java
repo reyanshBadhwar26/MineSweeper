@@ -21,6 +21,8 @@ public interface Universe {
 
 	public ArrayList<DisplayableSprite> getSprites();	
 	public ArrayList<Background> getBackgrounds();		
+	
+	public void addSprite(DisplayableSprite sprite);
 
 	public void update(KeyboardInput keyboard, long actual_delta_time);
     
