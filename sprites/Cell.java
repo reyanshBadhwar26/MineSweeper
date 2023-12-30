@@ -6,14 +6,15 @@ import javax.imageio.ImageIO;
 
 public class Cell implements DisplayableSprite {
 
-	private static Image image;	
+	private static Image normalImage;
+	private static Image flaggedImage;
 	private double centerX = 0;
 	private double centerY = 0;
 	private double width = 50;
 	private double height = 50;
 	private boolean dispose = false;	
-
-	private final double VELOCITY = 300;
+	private boolean flagIt = false;
+	private boolean isAlreadyFlagged = false;
 
 	public Cell(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
@@ -22,31 +23,38 @@ public class Cell implements DisplayableSprite {
 		this.width = width;
 	}
 
-	public Cell(double centerX, double centerY, String imageName) {
-
-		this.centerX = centerX;
-		this.centerY = centerY;
-		
-		if (image == null) {
-			try {
-				image = ImageIO.read(new File(String.format("res/%s", imageName)));
-			}
-			catch (IOException e) {
-				System.out.println(e.toString());
-			}		
-		}	
-		
-	}
-	
 	public Cell(double centerX, double centerY) {
 
 		this.centerX = centerX;
 		this.centerY = centerY;
 		
+		if (normalImage == null) {
+			try {
+				normalImage = ImageIO.read(new File("res/normalTile.png"));
+			}
+			catch (IOException e) {
+				System.out.println(e.toString());
+			}		
+		}
+		
+		
+		if (flaggedImage == null) {
+			try {
+				flaggedImage = ImageIO.read(new File("res/flagTile.png"));
+			}
+			catch (IOException e) {
+				System.out.println(e.toString());
+			}		
+		}
+		
 	}
 
 	public Image getImage() {
-		return image;
+		
+		if (flagIt) {
+			return flaggedImage;
+		} 
+		return normalImage;
 	}
 	
 	//DISPLAYABLE
@@ -90,16 +98,28 @@ public class Cell implements DisplayableSprite {
 	public boolean getDispose() {
 		return dispose;
 	}
-	
-	public void flag(Universe universe) {
-		FlaggedTile sprite = new FlaggedTile(this.centerX, this.centerY);
-		universe.addSprite(sprite);
-		this.setDispose(true);
-	}
-	
 
 	public void reveal() {
 		setDispose(true);
+	}
+	
+	public boolean isMouseOverCell() {
+		return (CollisionDetection.overlaps(this.getMinX(), this.getMinY(), this.getMaxX(), this.getMaxY(),
+				MouseInput.logicalX, MouseInput.logicalY, MouseInput.logicalX, MouseInput.logicalY));
+	}
+	
+	public boolean isFlagged() {
+		return isAlreadyFlagged;
+	}
+	
+	public void flag() {
+		if (!isAlreadyFlagged) {
+			flagIt = true;
+			isAlreadyFlagged = true;
+		} else {
+			isAlreadyFlagged = false;
+			flagIt = false;
+		}
 	}
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
@@ -107,16 +127,12 @@ public class Cell implements DisplayableSprite {
 		double velocityX = 0;
 		double velocityY = 0;
 		
-		if (MouseInput.leftButtonDown == true
-				&& CollisionDetection.overlaps(this.getMinX(), this.getMinY(), this.getMaxX(), this.getMaxY(),
-						MouseInput.logicalX, MouseInput.logicalY, MouseInput.logicalX, MouseInput.logicalY)) {
+		if (MouseInput.leftButtonDown && isMouseOverCell()) {
 			reveal();
-		} 
+		}
 		
-		if (MouseInput.rightButtonDown == true
-				&& CollisionDetection.overlaps(this.getMinX(), this.getMinY(), this.getMaxX(), this.getMaxY(),
-						MouseInput.logicalX, MouseInput.logicalY, MouseInput.logicalX, MouseInput.logicalY)) {
-			flag(universe);
+		if (MouseInput.rightButtonDown && isMouseOverCell()) {
+			flag();
 		}
 	
 		double deltaX = actual_delta_time * 0.001 * velocityX;
@@ -126,7 +142,6 @@ public class Cell implements DisplayableSprite {
     	this.centerY += deltaY;
 
 	}
-
 
 	@Override
 	public void setDispose(boolean dispose) {

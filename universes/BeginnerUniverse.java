@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class BeginnerUniverse implements Universe {
 
@@ -8,9 +9,9 @@ public class BeginnerUniverse implements Universe {
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	private ArrayList<Background> backgrounds = new ArrayList<Background>();
 	private Background background;
+	private Background hiddenBackground;
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
-	//Change these values to make the tiles be 10x10
 	public final int TILE_START_X_POINT = -250;
 	public final int TILE_STOP_X_POINT = 250;
 	public final int TILE_START_Y_POINT = -150;
@@ -22,6 +23,8 @@ public class BeginnerUniverse implements Universe {
 
 		background = new BeginnerBackground();
 		backgrounds.add(background);
+		//hiddenBackground = new HiddenSeedBeginner();
+		//backgrounds.add(hiddenBackground);
 		this.setXCenter(0);
 		this.setYCenter(0);
 		player1 = new NormalCell(0,0);
@@ -32,9 +35,7 @@ public class BeginnerUniverse implements Universe {
 				basicTile = new NormalCell(i, j);
 				sprites.add(basicTile);
 			}
-
-		}
-			
+		} 	
 	}
 
 	public double getScale() {
@@ -80,7 +81,7 @@ public class BeginnerUniverse implements Universe {
 	}		
 
 	public void update(KeyboardInput keyboard, long actual_delta_time) {
-
+		
 		if (keyboard.keyDownOnce(27)) {
 			complete = true;
 			this.player1.setDispose(true);
