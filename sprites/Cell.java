@@ -8,13 +8,19 @@ public class Cell implements DisplayableSprite {
 
 	private static Image normalImage;
 	private static Image flaggedImage;
+	private static Image revealedMine;
+	private static Image tileOne;
+	private static Image tileTwo;
+	private static Image tileThree;
 	private double centerX = 0;
 	private double centerY = 0;
 	private double width = 50;
 	private double height = 50;
-	private boolean dispose = false;	
+	private boolean dispose = false;
+	protected boolean mineReveal = false;
 	private boolean flagIt = false;
 	private boolean isAlreadyFlagged = false;
+	private int revealNumber = 0;
 
 	public Cell(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
@@ -47,13 +53,62 @@ public class Cell implements DisplayableSprite {
 			}		
 		}
 		
+		if (revealedMine == null) {
+			try {
+				revealedMine = ImageIO.read(new File("res/revealedMine.png"));
+			}
+			catch (IOException e) {
+				System.out.println(e.toString());
+			}		
+		}
+		
+		if (tileOne == null) {
+			try {
+				tileOne = ImageIO.read(new File("res/one.png"));
+			}
+			catch (IOException e) {
+				System.out.println(e.toString());
+			}		
+		}
+		
+		if (tileTwo == null) {
+			try {
+				tileTwo = ImageIO.read(new File("res/two.png"));
+			}
+			catch (IOException e) {
+				System.out.println(e.toString());
+			}		
+		}
+		
+		if (tileThree == null) {
+			try {
+				tileThree = ImageIO.read(new File("res/three.png"));
+			}
+			catch (IOException e) {
+				System.out.println(e.toString());
+			}		
+		}
+		
 	}
 
 	public Image getImage() {
 		
 		if (flagIt) {
 			return flaggedImage;
+		}
+		
+		if (mineReveal) {
+			return revealedMine;
 		} 
+		
+		if (revealNumber == 1) {
+			return tileOne;
+		} else if (revealNumber == 2) {
+			return tileTwo;
+		} else if (revealNumber == 3) {
+			return tileThree;
+		}
+		
 		return normalImage;
 	}
 	
@@ -99,8 +154,8 @@ public class Cell implements DisplayableSprite {
 		return dispose;
 	}
 
-	public void reveal() {
-		setDispose(true);
+	public void reveal(Universe universe) {
+		revealNumber = this.getNumberOfAdjacentMines(universe);
 	}
 	
 	public boolean isMouseOverCell() {
@@ -113,22 +168,36 @@ public class Cell implements DisplayableSprite {
 	}
 	
 	public void flag() {
-		if (!isAlreadyFlagged) {
-			flagIt = true;
-			isAlreadyFlagged = true;
-		} else {
-			isAlreadyFlagged = false;
-			flagIt = false;
-		}
+		flagIt = true;
 	}
 
+	//Algorithm to Check For Mines Around One Cell
+	public int getNumberOfAdjacentMines(Universe universe) {
+	    int count = 0;
+
+	    for (int i = 0; i < universe.getSprites().size(); i++) {
+	        DisplayableSprite sprite = universe.getSprites().get(i);
+
+	        if (sprite instanceof MineCell) {
+	            double distance = Math.sqrt(Math.pow(sprite.getCenterX() - this.getCenterX(), 2)
+	                    + Math.pow(sprite.getCenterY() - this.getCenterY(), 2));
+
+	            if (distance > 0 && distance <= sprite.getHeight() * 1.5) {
+	                count++;
+	            }
+	        }
+	    }
+
+	    return count;
+	}
+	
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
 		
 		double velocityX = 0;
 		double velocityY = 0;
 		
 		if (MouseInput.leftButtonDown && isMouseOverCell()) {
-			reveal();
+			reveal(universe);
 		}
 		
 		if (MouseInput.rightButtonDown && isMouseOverCell()) {

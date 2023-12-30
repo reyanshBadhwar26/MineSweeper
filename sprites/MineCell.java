@@ -1,3 +1,5 @@
+
+
 public class MineCell extends Cell {
 
 	public MineCell(double centerX, double centerY, double height, double width) {
@@ -8,11 +10,10 @@ public class MineCell extends Cell {
 	public MineCell(double centerX, double centerY) {
 
 		super(centerX, centerY);
-
 	}
 
-	public void reveal() {
-
+	public void reveal(Universe universe) {
+		mineReveal = true;
 	}
 
 	public void explode() {

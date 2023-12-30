@@ -18,6 +18,9 @@ public class BeginnerUniverse implements Universe {
 	public final int TILE_STOP_Y_POINT = 250;	
 	public final int TILE_WIDTH = 50;
 	public final int TILE_HEIGHT = 50;
+    private final int N_MINES = 10;
+	
+	Random rand = new Random();
 	
 	public BeginnerUniverse () {
 
@@ -35,7 +38,18 @@ public class BeginnerUniverse implements Universe {
 				basicTile = new NormalCell(i, j);
 				sprites.add(basicTile);
 			}
-		} 	
+		}
+		
+		for (int i = 0; i <= N_MINES; i++) {
+			int randomTile = rand.nextInt(sprites.size());
+			if (sprites.get(randomTile) instanceof MineCell == false) {
+				sprites.set(randomTile, new MineCell(sprites.get(randomTile).getCenterX(),
+								sprites.get(randomTile).getCenterY()));
+			}
+
+		}
+		
+		
 	}
 
 	public double getScale() {
