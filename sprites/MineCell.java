@@ -13,10 +13,16 @@ public class MineCell extends Cell {
 	}
 
 	public void reveal(Universe universe) {
-		mineReveal = true;
+		explode(universe);	
 	}
 
-	public void explode() {
+	public void explode(Universe universe) {
 
+		for (DisplayableSprite sprite : universe.getSprites()){
+			if (sprite instanceof MineCell) {
+				((MineCell) sprite).mineReveal = true;
+			}
+		}
+		
 	}
 }

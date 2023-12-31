@@ -9,8 +9,48 @@ public class NormalCell extends Cell {
 		super(centerX, centerY);
 
 	}
+	
+	public void reveal(Universe universe) {
+		if (this.getIsRevealed()) {
+			return;
+		} 
+		
+		if (this.getNumberOfAdjacentMines(universe)== 0) {
+			expand(this, universe);
+		} else {
+			revealNumber(universe);
+		}
+		
+	}
 
-	public void expand() {
+	public void expand(Cell currentCell, Universe universe) {
+		
+		if (currentCell instanceof MineCell || currentCell.getIsRevealed()) {
+			return;
+		} else if (currentCell.getNumberOfAdjacentMines(universe) > 0) {
+			((NormalCell) currentCell).revealNumber(universe);
+		} else if (currentCell.getNumberOfAdjacentMines(universe) ==  0) {
+			((NormalCell) currentCell).revealEmptyCell();
+			
+			for (DisplayableSprite sprite : currentCell.getAdjacentCells(universe)) {
+				System.out.println(sprite.toString());
+				Cell adjacentCell = (Cell) sprite;
+				expand(adjacentCell, universe); 
+			}
+		}
+		
 
+		
+	}
+	
+	public void revealEmptyCell() {
+		revealEmptyTile = true;
+		this.setReveal(true);
+	}
+	
+	public void revealNumber(Universe universe) {
+		revealNumber = this.getNumberOfAdjacentMines(universe);
+		System.out.println(revealNumber);
+		setReveal(true);
 	}
 }
