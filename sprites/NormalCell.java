@@ -33,7 +33,6 @@ public class NormalCell extends Cell {
 			((NormalCell) currentCell).revealEmptyCell();
 			
 			for (DisplayableSprite sprite : currentCell.getAdjacentCells(universe)) {
-				System.out.println(sprite.toString());
 				Cell adjacentCell = (Cell) sprite;
 				expand(adjacentCell, universe); 
 			}
@@ -50,7 +49,6 @@ public class NormalCell extends Cell {
 	
 	public void revealNumber(Universe universe) {
 		revealNumber = this.getNumberOfAdjacentMines(universe);
-		System.out.println(revealNumber);
 		setReveal(true);
 	}
 }

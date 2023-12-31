@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Dialog.ModalityType;
 import java.util.ArrayList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -19,6 +20,8 @@ import java.awt.event.MouseMotionAdapter;
  */
 
 public class AnimationFrame extends JFrame {
+	
+	private WinFrame levelFinished = null;
 
 	final public static int FRAMES_PER_SECOND = 60;
 	final long REFRESH_TIME = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
@@ -218,7 +221,7 @@ public class AnimationFrame extends JFrame {
 			player1 = universe.getPlayer1();
 			backgrounds = universe.getBackgrounds();
 			this.scale = universe.getScale();
-
+			
 			// main game loop
 			while (stop == false && universe.isComplete() == false) {
 
@@ -261,7 +264,19 @@ public class AnimationFrame extends JFrame {
 				this.logicalCenterY = universe.getYCenter();
 
 				this.repaint();
+				
+				if (universe.levelFinished()) {
+					levelFinished = new WinFrame("FINISH GAME");
+					
+					levelFinished.setLocationRelativeTo(this);
+					levelFinished.setModalityType(ModalityType.APPLICATION_MODAL);
+					levelFinished.setVisible(true);
 
+					levelFinished.dispose();
+					
+					stop = true;
+				}
+				
 			}
 
 			handleUniverseComplete();

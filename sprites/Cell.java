@@ -141,6 +141,7 @@ public class Cell implements DisplayableSprite {
 	public Image getImage() {
 
 		if (flagIt) {
+			isAlreadyFlagged = true;
 			return flaggedImage;
 		}
 

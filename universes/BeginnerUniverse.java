@@ -10,15 +10,16 @@ public class BeginnerUniverse implements Universe {
 	private ArrayList<Background> backgrounds = new ArrayList<Background>();
 	private Background background;
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
-
 	public final int TILE_START_X_POINT = -250;
 	public final int TILE_STOP_X_POINT = 250;
 	public final int TILE_START_Y_POINT = -150;
 	public final int TILE_STOP_Y_POINT = 250;
 	public final int TILE_WIDTH = 50;
 	public final int TILE_HEIGHT = 50;
-	private final int N_MINES = 12;
-
+	private final int N_MINES = 15;
+	
+	private int minesRemaining;
+	
 	Random rand = new Random();
 
 	public BeginnerUniverse() {
@@ -42,6 +43,7 @@ public class BeginnerUniverse implements Universe {
 			if (sprites.get(randomTile) instanceof MineCell == false) {
 				sprites.set(randomTile,
 						new MineCell(sprites.get(randomTile).getCenterX(), sprites.get(randomTile).getCenterY()));
+				minesRemaining++;
 			}
 
 		}
@@ -96,14 +98,24 @@ public class BeginnerUniverse implements Universe {
 			complete = true;
 			this.player1.setDispose(true);
 		}
+		
+		for (DisplayableSprite sprite : sprites) {
+			if (sprite instanceof MineCell) {
+				if (((MineCell) sprite).isFlagged() && !((MineCell) sprite).getHasBeenChecked()) {
+					minesRemaining --;
+					((MineCell) sprite).setHasBeenChecked(true);
+				}
+			}
+		}
 
 		for (int i = 0; i < sprites.size(); i++) {
 			DisplayableSprite sprite = sprites.get(i);
 			sprite.update(this, keyboard, actual_delta_time);
 		}
-
+		
+		levelFinished();
 		disposeSprites();
-
+		
 	}
 
 	protected void disposeSprites() {
@@ -137,6 +149,13 @@ public class BeginnerUniverse implements Universe {
 	@Override
 	public void addSprite(DisplayableSprite sprite) {
 		sprites.add(sprite);
+	}
+
+	public boolean levelFinished() {
+		if (minesRemaining == 0) {
+			return true;
+		} 
+		return false;
 	}
 
 }
