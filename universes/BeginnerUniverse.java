@@ -19,6 +19,9 @@ public class BeginnerUniverse implements Universe {
 	private final int N_MINES = 15;
 	
 	private int minesRemaining;
+	private int flagsRemaining;
+
+	private boolean lost = false;
 	
 	Random rand = new Random();
 
@@ -47,6 +50,8 @@ public class BeginnerUniverse implements Universe {
 			}
 
 		}
+		
+		flagsRemaining = minesRemaining;
 
 	}
 
@@ -143,7 +148,7 @@ public class BeginnerUniverse implements Universe {
 	}
 
 	public String toString() {
-		return "MineSweeperBasic";
+		return "Mine Sweeper Beginner";
 	}
 
 	@Override
@@ -157,5 +162,26 @@ public class BeginnerUniverse implements Universe {
 		} 
 		return false;
 	}
+
+	public boolean getLost() {
+		return lost;
+	}
+
+	public void setLost(boolean lost) {
+		this.lost = lost;
+		
+	}
+	
+	public int getFlagsRemaining() {
+		for (DisplayableSprite sprite : sprites) {
+			if (((Cell) sprite).isFlagged() && !((Cell) sprite).getHasBeenChecked()) {
+					flagsRemaining --;
+					((Cell) sprite).setHasBeenChecked(true);
+				}
+		}
+		
+		return flagsRemaining;
+	}
+	
 
 }

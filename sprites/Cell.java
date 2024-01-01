@@ -26,10 +26,13 @@ public class Cell implements DisplayableSprite {
 	private boolean dispose = false;
 	protected boolean mineReveal = false;
 	private boolean flagIt = false;
+	private int flagsRemaining;
 	private boolean isAlreadyFlagged = false;
 	protected int revealNumber = 0;
 	protected boolean revealEmptyTile = false;
 	private boolean isAlreadyRevealed = false;
+	private boolean hasBeenChecked = false;
+
 
 	public Cell(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
@@ -228,7 +231,11 @@ public class Cell implements DisplayableSprite {
 	}
 
 	public void flag() {
-		flagIt = true;
+		
+		if (flagsRemaining > 0) {
+			flagIt = true;
+		}
+
 	}
 	
 	public boolean getIsRevealed() {
@@ -237,6 +244,14 @@ public class Cell implements DisplayableSprite {
 	
 	public void setReveal(boolean reveal) {
 		isAlreadyRevealed = reveal;
+	}
+	
+	public boolean getHasBeenChecked() {
+		return hasBeenChecked;
+	}
+
+	public void setHasBeenChecked(boolean hasBeenChecked) {
+		this.hasBeenChecked = hasBeenChecked;
 	}
 
 	// Algorithm to Check For Mines Around One Cell
@@ -296,7 +311,8 @@ public class Cell implements DisplayableSprite {
 
 		double deltaY = actual_delta_time * 0.001 * velocityY;
 		this.centerY += deltaY;
-
+		
+		flagsRemaining = universe.getFlagsRemaining();
 	}
 
 	@Override

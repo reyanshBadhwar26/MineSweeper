@@ -2,7 +2,7 @@
 
 public class MineCell extends Cell {
 	
-	private boolean hasBeenChecked = false;
+
 
 	public MineCell(double centerX, double centerY, double height, double width) {
 
@@ -26,13 +26,8 @@ public class MineCell extends Cell {
 			}
 		}
 		
-	}
-	
-	public boolean getHasBeenChecked() {
-		return hasBeenChecked;
+		universe.setLost(true);
+		
 	}
 
-	public void setHasBeenChecked(boolean hasBeenChecked) {
-		this.hasBeenChecked = hasBeenChecked;
-	}
 }

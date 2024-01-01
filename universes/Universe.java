@@ -24,6 +24,9 @@ public interface Universe {
 	
 	public void addSprite(DisplayableSprite sprite);
 	public boolean levelFinished();
+	public boolean getLost();
+	public void setLost(boolean lost);
+	public int getFlagsRemaining();
 
 	public void update(KeyboardInput keyboard, long actual_delta_time);
     

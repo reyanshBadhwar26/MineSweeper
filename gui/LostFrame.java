@@ -39,7 +39,7 @@ public class LostFrame extends JDialog {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblTitle = new JLabel("You lost all your lives!");
+		JLabel lblTitle = new JLabel("You clicked on the mine!");
 		lblTitle.setForeground(Color.BLACK);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Times New Roman", Font.PLAIN, 25));
@@ -53,7 +53,7 @@ public class LostFrame extends JDialog {
 		lblPickup.setBounds(0, 87, 369, 61);
 		contentPane.add(lblPickup);
 		
-		JButton btnPlay = new JButton("TRY AGAIN");
+		JButton btnPlay = new JButton("END GAME");
 		btnPlay.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

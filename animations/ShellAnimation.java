@@ -23,5 +23,16 @@ public class ShellAnimation implements Animation {
 		}
 
 	}
+
+	public Universe restartUniverse(int universe) {
+		
+		if (universe == 1) {
+			return new BeginnerUniverse();
+		}
+		else {
+			return null;
+		}
+		
+	}
 	
 }

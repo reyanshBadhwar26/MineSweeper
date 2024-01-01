@@ -22,6 +22,7 @@ import java.awt.event.MouseMotionAdapter;
 public class AnimationFrame extends JFrame {
 	
 	private WinFrame levelFinished = null;
+	private LostFrame lost = null;
 
 	final public static int FRAMES_PER_SECOND = 60;
 	final long REFRESH_TIME = 1000 / FRAMES_PER_SECOND;	//MILLISECONDS
@@ -149,14 +150,14 @@ public class AnimationFrame extends JFrame {
 		lblTop = new JLabel("Time: ");
 		lblTop.setForeground(Color.WHITE);
 		lblTop.setFont(new Font("Consolas", Font.BOLD, 20));
-		lblTop.setBounds(16, 22, SCREEN_WIDTH - 16, 30);
+		lblTop.setBounds(150, 22, SCREEN_WIDTH - 16, 30);
 		getContentPane().add(lblTop);
 		getContentPane().setComponentZOrder(lblTop, 0);
 
 		lblBottom = new JLabel("Status");
-		lblBottom.setForeground(Color.WHITE);
+		lblBottom.setForeground(Color.BLACK);
 		lblBottom.setFont(new Font("Consolas", Font.BOLD, 30));
-		lblBottom.setBounds(16, SCREEN_HEIGHT - 30 - 16, SCREEN_WIDTH - 16, 36);
+		lblBottom.setBounds(16, SCREEN_HEIGHT - 300 - 220, SCREEN_WIDTH - 16, 36);
 		lblBottom.setHorizontalAlignment(SwingConstants.CENTER);
 		getContentPane().add(lblBottom);
 		getContentPane().setComponentZOrder(lblBottom, 0);
@@ -258,6 +259,7 @@ public class AnimationFrame extends JFrame {
 				universe.update(keyboard, deltaTime);
 				if (DISPLAY_TIMING == true) System.out.println(String.format("animation loop: %10s @ %6d  (+%4d ms)", "logic", System.currentTimeMillis() % 1000000, System.currentTimeMillis() - lastRefreshTime));
 				
+				
 				//update interface
 				updateControls();
 				this.logicalCenterX = universe.getXCenter();
@@ -265,6 +267,7 @@ public class AnimationFrame extends JFrame {
 
 				this.repaint();
 				
+
 				if (universe.levelFinished()) {
 					levelFinished = new WinFrame("FINISH GAME");
 					
@@ -273,6 +276,23 @@ public class AnimationFrame extends JFrame {
 					levelFinished.setVisible(true);
 
 					levelFinished.dispose();
+					
+					stop = true;
+				}
+				
+				if (universe.getLost()) {
+					try {
+						Thread.sleep(300);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					lost = new LostFrame();
+					lost.setLocationRelativeTo(this);
+					lost.setModalityType(ModalityType.APPLICATION_MODAL);
+					lost.setVisible(true);
+
+					lost.dispose();
 					
 					stop = true;
 				}
@@ -295,7 +315,8 @@ public class AnimationFrame extends JFrame {
 	}
 	protected void updateControls() {
 		
-		this.lblTop.setText(String.format("Time: %9.3f;  offsetX: %5d; offsetY: %5d;  scale: %3.3f", total_elapsed_time / 1000.0, screenOffsetX, screenOffsetY, scale));
+		this.lblTop.setText(String.format("Time: %9.3f                 Mines: %5d", total_elapsed_time / 1000.0, universe.getFlagsRemaining()));
+		this.lblTop.setForeground(Color.BLACK);
 		this.lblBottom.setText(Integer.toString(universeLevel));
 		if (universe != null) {
 			this.lblBottom.setText(universe.toString());
