@@ -329,7 +329,7 @@ public class AnimationFrame extends JFrame {
 			isPaused = false;
 			this.btnPauseRun.setText("||");
 		}
-		else {
+		else { 
 			isPaused = true;
 			this.btnPauseRun.setText(">");
 		}
