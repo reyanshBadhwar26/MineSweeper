@@ -37,9 +37,6 @@ public class NormalCell extends Cell {
 				expand(adjacentCell, universe); 
 			}
 		}
-		
-
-		
 	}
 	
 	public void revealEmptyCell() {

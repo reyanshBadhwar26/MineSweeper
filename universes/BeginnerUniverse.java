@@ -104,20 +104,22 @@ public class BeginnerUniverse implements Universe {
 			this.player1.setDispose(true);
 		}
 		
-		for (DisplayableSprite sprite : sprites) {
-			if (sprite instanceof MineCell) {
-				if (((MineCell) sprite).isFlagged() && !((MineCell) sprite).getHasBeenChecked()) {
-					minesRemaining --;
-					((MineCell) sprite).setHasBeenChecked(true);
-				}
-			}
-		}
+		getFlagsRemaining();
+//		for (DisplayableSprite sprite : sprites) {
+//			if (sprite instanceof MineCell) {
+//				if (((MineCell) sprite).isFlagged() && !((MineCell) sprite).getHasBeenChecked()) {
+//					minesRemaining --;
+//					((MineCell) sprite).setHasBeenChecked(true);
+//				}
+//			}
+//		}
 
 		for (int i = 0; i < sprites.size(); i++) {
 			DisplayableSprite sprite = sprites.get(i);
 			sprite.update(this, keyboard, actual_delta_time);
 		}
 		
+		System.out.println(minesRemaining);
 		levelFinished();
 		disposeSprites();
 		
@@ -175,6 +177,9 @@ public class BeginnerUniverse implements Universe {
 	public int getFlagsRemaining() {
 		for (DisplayableSprite sprite : sprites) {
 			if (((Cell) sprite).isFlagged() && !((Cell) sprite).getHasBeenChecked()) {
+				if (sprite instanceof MineCell) {
+					minesRemaining --;
+				}
 					flagsRemaining --;
 					((Cell) sprite).setHasBeenChecked(true);
 				}
